@@ -44,6 +44,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler({NotFoundInstructorException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ExceptionMessageResponse> handleException(NotFoundInstructorException exc){
+        ExceptionMessageResponse response = prepareErrorResponse(HttpStatus.BAD_REQUEST, exc.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler({StudentNumberForOneExceededException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ExceptionMessageResponse> handleException(StudentNumberForOneExceededException exc){

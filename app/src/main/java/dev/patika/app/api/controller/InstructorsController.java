@@ -2,6 +2,7 @@ package dev.patika.app.api.controller;
 
 import dev.patika.app.bussiness.abstracts.InstructorService;
 import dev.patika.app.entity.dto.InstructorDto;
+import dev.patika.app.entity.enums.PercentType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,5 +27,12 @@ public class InstructorsController {
     @PostMapping
     public ResponseEntity saveInstructor(@RequestBody InstructorDto instructorDto){
         return new ResponseEntity(this.instructorService.save(instructorDto), HttpStatus.OK);
+    }
+
+    @PutMapping("/updateSalary")
+    public ResponseEntity updateSalary(@RequestParam double percent,
+                                       @RequestParam PercentType percentType,
+                                       @RequestParam long instructorId){
+        return new ResponseEntity(this.instructorService.updateSalary(instructorId, percent, percentType).get(), HttpStatus.OK);
     }
 }
