@@ -2,10 +2,7 @@ package dev.patika.app.bussiness.concretes;
 
 import dev.patika.app.bussiness.abstracts.CourseService;
 import dev.patika.app.bussiness.abstracts.StudentService;
-import dev.patika.app.core.exceptions.CourseNotFoundException;
-import dev.patika.app.core.exceptions.InstructorIsAlreadyExistsException;
-import dev.patika.app.core.exceptions.StudentNotFoundException;
-import dev.patika.app.core.exceptions.StudentNumberForOneExceededException;
+import dev.patika.app.core.exceptions.*;
 import dev.patika.app.core.exceptions.dao.ExceptionsDao;
 import dev.patika.app.core.exceptions.entity.Exception;
 import dev.patika.app.core.mapper.CourseMapper;
@@ -35,7 +32,7 @@ public class CourseManager implements CourseService {
                     .statusCode("400")
                     .message("Course(" + courseDto.getName() + ") with code("+ courseDto.getCode() +") already exists!").build();
             this.exceptionsDao.save(exception);
-            throw new InstructorIsAlreadyExistsException(exception.getMessage());
+            throw new CourseIsAlreadyExistsException(exception.getMessage());
         }
         Course course = this.courseMapper.mapFromCourseDTOToCourse(courseDto);
         return Optional.of(this.courseDao.save(course));
