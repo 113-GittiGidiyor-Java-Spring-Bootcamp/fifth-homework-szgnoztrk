@@ -25,6 +25,7 @@ import dev.patika.app.entity.enums.PercentType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -112,7 +113,7 @@ public class InstructorManager implements InstructorService {
             instructorSalaryUpdatedLogger.setClientUrl(clientRequestInfo.getClientUrl());
             instructorSalaryUpdatedLogger.setClientIpAddress(clientRequestInfo.getClientIpAdress());
             instructorSalaryUpdatedLogger.setSessionActivityId(clientRequestInfo.getSessionActivityId());
-            instructorSalaryUpdatedLogger.setLogDate(LocalDateTime.now());
+            instructorSalaryUpdatedLogger.setLogDate(LocalDate.now());
             this.instructorSalaryUpdatedLoggerDao.save(instructorSalaryUpdatedLogger);
             return Optional.of(instructorSalaryUpdatedLogger);
         }

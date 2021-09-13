@@ -24,7 +24,7 @@ public class SalaryLoggerManager implements SalaryLoggerService {
     public List<InstructorSalaryUpdatedLogger> getAllByDateOrId(String date, Long instructorId) {
         LocalDate localDateTime = null;
         if (date != null)
-            localDateTime = LocalDate.parse(date, DateTimeFormatter.ofPattern("d/MM/yyyy"));
+            localDateTime = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         return this.dao.getAllByInstructorIdOrLogDateIsLike(instructorId, localDateTime);
     }
 }

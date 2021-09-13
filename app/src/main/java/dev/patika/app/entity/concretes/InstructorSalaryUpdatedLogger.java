@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -25,5 +26,5 @@ public class InstructorSalaryUpdatedLogger {
     private String clientIpAddress;
     private String clientUrl;
     private String sessionActivityId;
-    private LocalDateTime logDate;
+    private LocalDate logDate;
 }
