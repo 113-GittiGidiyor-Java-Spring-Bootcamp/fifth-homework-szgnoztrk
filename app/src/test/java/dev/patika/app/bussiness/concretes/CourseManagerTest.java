@@ -66,12 +66,11 @@ class CourseManagerTest {
     }
 
     @Test
-    void getId(){
+    void getCourseById(){
         Course course = new Course();
         course.setId(1L);
         lenient().when(this.courseDao.findById(anyLong())).thenReturn(course);
 
-        Long aLong = 1L;
         Course actual = this.courseService.getById(anyLong()).get();
 
         assertEquals(actual, course);
