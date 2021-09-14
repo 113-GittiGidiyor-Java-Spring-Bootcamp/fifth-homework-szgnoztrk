@@ -59,7 +59,8 @@ public class InstructorManager implements InstructorService {
             permanentInstructorDto.setSalary(instructorDto.getSalary());
             instructor = permanentInstructorMapper.mapFromPermanentInstructorDTOToPermanentInstructor(permanentInstructorDto);
         }
-        if(this.instructorDao.existsByPhoneNumber(instructor.getPhoneNumber())) {
+        boolean isExists = this.instructorDao.existsByPhoneNumber(instructor.getPhoneNumber());
+        if(isExists) {
             Exception exception = Exception.builder()
                     .errorClass(InstructorIsAlreadyExistsException.class.getName())
                     .statusCode("400")

@@ -51,11 +51,16 @@ public class CourseManager implements CourseService {
 
     @Override
     public Optional<Course> addStudentCourse(Long courseId, Long studentId) {
-        Course course = this.courseDao.findById(courseId).orElseThrow(() -> new CourseNotFoundException(String.format("Course with ID: %d could not foud!", courseId)));
+        Optional<Course> course = this.courseDao.findById(courseId);
+        if(!course.isPresent())
+            throw new CourseNotFoundException(String.format("Course with ID: %d could not found!", courseId));
 
-        Student student = this.studentDao.findById(studentId).orElseThrow(() -> new StudentNotFoundException(String.format("Student with ID: %d could not foud!", studentId)));
+        Optional<Student> student = this.studentDao.findById(studentId);
+        if(!student.isPresent())
+            throw new StudentNotFoundException(String.format("Student with ID: %d could not found!", studentId));
 
-        if(course.getStudents().size() > 20){
+        boolean isSize = this.courseDao.courseStudentsSizeValid(course.get().getId());
+        if(isSize){
             Exception exception = Exception.builder()
                     .errorClass(InstructorIsAlreadyExistsException.class.getName())
                     .statusCode("400")
@@ -63,9 +68,7 @@ public class CourseManager implements CourseService {
             this.exceptionsDao.save(exception);
             throw new StudentNumberForOneExceededException(exception.getMessage());
         }
-        List<Student> listOfCourse = course.getStudents();
-        listOfCourse.add(student);
-        course.setStudents(listOfCourse);
-        return Optional.of(this.courseDao.save(course));
+        course.get().getStudents().add(student.get());
+        return Optional.of(this.courseDao.save(course.get()));
     }
 }

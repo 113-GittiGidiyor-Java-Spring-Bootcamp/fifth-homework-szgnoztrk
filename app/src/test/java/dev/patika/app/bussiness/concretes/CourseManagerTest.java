@@ -4,6 +4,8 @@ import dev.patika.app.core.exceptions.CourseIsAlreadyExistsException;
 import dev.patika.app.core.exceptions.CourseNotFoundException;
 import dev.patika.app.core.exceptions.StudentNotFoundException;
 import dev.patika.app.core.exceptions.StudentNumberForOneExceededException;
+import dev.patika.app.core.exceptions.dao.ExceptionsDao;
+import dev.patika.app.core.exceptions.entity.Exception;
 import dev.patika.app.core.mapper.CourseMapper;
 import dev.patika.app.dao.abstracts.CourseDao;
 import dev.patika.app.dao.abstracts.StudentDao;
@@ -15,8 +17,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.opentest4j.TestSkippedException;
 
+
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,6 +40,9 @@ class CourseManagerTest {
 
     @Mock
     CourseMapper courseMapper;
+
+    @Mock
+    ExceptionsDao exceptionsDao;
 
     @InjectMocks
     CourseManager courseService;
@@ -56,10 +66,15 @@ class CourseManagerTest {
 
     @Test
     void save2() {
-        String s = "JAVA";
-        lenient().when(this.courseDao.existsByCode(s)).thenReturn(Boolean.TRUE);
+        Exception exception = new Exception();
+        Course course = new Course();
+        lenient().when(this.courseDao.existsByCode(anyString())).thenReturn(Boolean.TRUE);
+        lenient().when(this.exceptionsDao.save(any())).thenReturn(exception);
+        lenient().when(this.courseMapper.mapFromCourseDTOToCourse(any())).thenReturn(course);
+        lenient().when(this.courseDao.save(any())).thenReturn(course);
 
         CourseDto courseDto = new CourseDto();
+        courseDto.setCode("JAVA");
         Executable executable =  () -> { this.courseService.save(courseDto).get(); };
 
         assertThrows(CourseIsAlreadyExistsException.class, executable);
@@ -68,20 +83,20 @@ class CourseManagerTest {
     @Test
     void getCourseById(){
         Course course = new Course();
-        course.setId(1L);
         lenient().when(this.courseDao.findById(anyLong())).thenReturn(course);
 
-        Course actual = this.courseService.getById(anyLong()).get();
+        Optional<Course> actual = this.courseService.getById(anyLong());
 
-        assertEquals(actual, course);
+        assertNotNull(actual);
     }
 
     @Test
     void addStudentCourse1() {
+        Exception exception = new Exception();
         lenient().when(this.courseDao.findById(anyLong())).thenReturn(null);
+        lenient().when(this.exceptionsDao.save(any())).thenReturn(exception);
 
-        Long aLong = 1L;
-        Long bLong = 1L;
+        Long aLong = 1L, bLong = 1L;
         Executable executable = () -> this.courseService.addStudentCourse(aLong, bLong);
 
         assertThrows(CourseNotFoundException.class, executable);
@@ -89,12 +104,13 @@ class CourseManagerTest {
 
     @Test
     void addStudentCourse2() {
+        Exception exception = new Exception();
         Course course = new Course();
-        lenient().when(this.courseDao.findById(anyLong())).thenReturn(course);
+        lenient().when(this.courseDao.findById(any())).thenReturn(Optional.of(course));
         lenient().when(this.studentDao.findById(anyLong())).thenReturn(null);
+        lenient().when(this.exceptionsDao.save(any())).thenReturn(exception);
 
-        Long aLong = 1L;
-        Long bLong = 1L;
+        Long aLong=1L, bLong=1L;
         Executable executable = () -> this.courseService.addStudentCourse(aLong, bLong);
 
         assertThrows(StudentNotFoundException.class, executable);
@@ -102,14 +118,15 @@ class CourseManagerTest {
 
     @Test
     void addStudentCourse3() {
+        Exception exception = new Exception();
         Course course = new Course();
         Student student = new Student();
-        lenient().when(this.courseDao.findById(anyLong())).thenReturn(course);
-        lenient().when(this.studentDao.findById(anyLong())).thenReturn(student);
+        lenient().when(this.courseDao.findById(any())).thenReturn(Optional.of(course));
+        lenient().when(this.studentDao.findById(any())).thenReturn(Optional.of(student));
+        lenient().when(this.courseDao.courseStudentsSizeValid(anyLong())).thenReturn(Boolean.TRUE);
+        lenient().when(this.exceptionsDao.save(any())).thenReturn(exception);
 
-        Long aLong = 1L;
-        Long bLong = 1L;
-        Executable executable = () -> this.courseService.addStudentCourse(aLong, bLong);
+        Executable executable = () -> this.courseService.addStudentCourse(null, null);
 
         assertThrows(StudentNumberForOneExceededException.class, executable);
     }

@@ -1,6 +1,8 @@
 package dev.patika.app.bussiness.concretes;
 
 import dev.patika.app.core.exceptions.InstructorIsAlreadyExistsException;
+import dev.patika.app.core.exceptions.dao.ExceptionsDao;
+import dev.patika.app.core.exceptions.entity.Exception;
 import dev.patika.app.core.mapper.InstructorMapper;
 import dev.patika.app.core.mapper.VisitingResearcherMapper;
 import dev.patika.app.dao.abstracts.InstructorDao;
@@ -26,6 +28,9 @@ import static org.mockito.Mockito.*;
 class InstructorManagerTest {
     @Mock
     InstructorDao instructorDao;
+
+    @Mock
+    ExceptionsDao exceptionsDao;
 
     @Mock
     VisitingResearcherMapper instructorMapper;
@@ -56,9 +61,11 @@ class InstructorManagerTest {
 
     @Test
     void save2() {
+        Exception exception = new Exception();
         VisitingResearcher instructor = new VisitingResearcher();
         lenient().when(this.instructorMapper.mapFromVisitingInstructorDTOToVisitingInstructor(any())).thenReturn(instructor);
-        lenient().when(this.instructorDao.existsByPhoneNumber(anyString())).thenReturn(Boolean.TRUE);
+        lenient().when(this.instructorDao.existsByPhoneNumber(any())).thenReturn(Boolean.TRUE);
+        lenient().when(this.exceptionsDao.save(any())).thenReturn(exception);
 
         InstructorDto instructorDto = new VisitingResearcherDto();
         instructorDto.setInstructorType("visiting");

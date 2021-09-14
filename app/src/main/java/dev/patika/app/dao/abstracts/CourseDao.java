@@ -20,4 +20,14 @@ public interface CourseDao extends JpaRepository<Course, Long> {
             "FROM Course c " +
             "WHERE c.code = ?1")
     boolean existsByCode(String s);
+    @Query("SELECT " +
+            "CASE " +
+            "WHEN c.students.size > 20" +
+            "THEN TRUE " +
+            "ELSE FALSE " +
+            "END " +
+            "FROM Course c " +
+            "WHERE c.id= ?1")
+    boolean courseStudentsSizeValid(long id);
+
 }
