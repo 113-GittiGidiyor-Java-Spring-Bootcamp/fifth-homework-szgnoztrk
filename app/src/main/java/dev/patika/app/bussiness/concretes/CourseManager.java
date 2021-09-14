@@ -26,7 +26,8 @@ public class CourseManager implements CourseService {
     private final StudentDao studentDao;
     @Override
     public Optional<Course> save(CourseDto courseDto) {
-        if(this.courseDao.existsByCode(courseDto.getCode())){
+        boolean isExistsCode = this.courseDao.existsByCode(courseDto.getCode());
+        if(isExistsCode){
             Exception exception = Exception.builder()
                     .errorClass(InstructorIsAlreadyExistsException.class.getName())
                     .statusCode("400")
