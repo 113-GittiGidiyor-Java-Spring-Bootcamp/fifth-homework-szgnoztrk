@@ -4,10 +4,8 @@ import dev.patika.app.bussiness.abstracts.InstructorService;
 import dev.patika.app.core.config.ClientRequestInfo;
 import dev.patika.app.core.exceptions.InstructorIsAlreadyExistsException;
 import dev.patika.app.core.exceptions.NotFoundInstructorException;
-import dev.patika.app.core.exceptions.StudentAgeNotValidException;
 import dev.patika.app.core.exceptions.dao.ExceptionsDao;
 import dev.patika.app.core.exceptions.entity.Exception;
-import dev.patika.app.core.mapper.InstructorMapper;
 import dev.patika.app.core.mapper.PermanentInstructorMapper;
 import dev.patika.app.core.mapper.VisitingResearcherMapper;
 import dev.patika.app.dao.abstracts.InstructorDao;
@@ -26,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 

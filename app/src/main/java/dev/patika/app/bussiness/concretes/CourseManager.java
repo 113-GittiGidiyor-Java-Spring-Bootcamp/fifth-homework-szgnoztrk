@@ -50,9 +50,9 @@ public class CourseManager implements CourseService {
 
     @Override
     public Optional<Course> addStudentCourse(Long courseId, Long studentId) {
-        Course course = Optional.of(this.courseDao.getById(courseId)).orElseThrow(() -> new CourseNotFoundException(String.format("Course with ID: %d could not foud!", courseId)));
+        Course course = this.courseDao.findById(courseId).orElseThrow(() -> new CourseNotFoundException(String.format("Course with ID: %d could not foud!", courseId)));
 
-        Student student = Optional.of(this.studentDao.getById(studentId)).orElseThrow(() -> new StudentNotFoundException(String.format("Student with ID: %d could not foud!", studentId)));
+        Student student = this.studentDao.findById(studentId).orElseThrow(() -> new StudentNotFoundException(String.format("Student with ID: %d could not foud!", studentId)));
 
         if(course.getStudents().size() > 20){
             Exception exception = Exception.builder()

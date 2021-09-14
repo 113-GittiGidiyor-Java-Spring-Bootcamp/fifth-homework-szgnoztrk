@@ -1,11 +1,14 @@
 package dev.patika.app.api.controller;
 
 import dev.patika.app.bussiness.abstracts.CourseService;
+import dev.patika.app.entity.concretes.Course;
 import dev.patika.app.entity.dto.CourseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,8 +26,11 @@ public class CoursesController {
     }
 
     @PostMapping
-    public ResponseEntity saveCourse(@RequestBody CourseDto courseDto){
-        return new ResponseEntity(this.courseService.save(courseDto), HttpStatus.OK);
+    public ResponseEntity<Course> saveCourse(@RequestBody CourseDto courseDto){
+        Optional<Course> optionalCourse = this.courseService.save(courseDto);
+        if(optionalCourse.isPresent())
+            return new ResponseEntity(optionalCourse.get(), HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/add-student-to-course")
